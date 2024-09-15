@@ -3,14 +3,13 @@ import initModels from "../Models/init-models.js";
 import bcrypt from "bcrypt";
 import {taoToken} from "../Config/jwtConfig.js";
 import { Sequelize } from 'sequelize';
-import jwt from "jsonwebtoken";
 
 const Op = Sequelize.Op;
 const model = initModels(sequelize);
 
 const signUp = async (req, res) => {
     try {
-        let { HOTEN_ND, EMAIL, MATKHAU, SDT_ND, NGAYSINH, GIOITINH, NGAYDANGKY, ANHDAIDIEN, VAITRO } = req.body;
+        let { HOTEN_ND, EMAIL, MATKHAU, SDT_ND, NGAYSINH, GIOITINH, NGAYDANGKY, ANHDAIDIEN, CHUCVU } = req.body;
         
         const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,}$/;
         if (!passwordRegex.test(MATKHAU)) {
@@ -19,10 +18,10 @@ const signUp = async (req, res) => {
         }
 
         let whereCondition = {};
-        if (SDT) {
+        if (SDT_ND) {
             whereCondition.SDT_ND = SDT_ND;
         }
-        if (E) {
+        if (EMAIL) {
             whereCondition.EMAIL = EMAIL;
         }
 
@@ -35,27 +34,27 @@ const signUp = async (req, res) => {
             return;
         }
         
-        if (!SDT && !EMAIL) {
+        if (!SDT_ND && !EMAIL) {
             res.status(400).send("Vui lòng cung cấp ít nhất một trong hai thông tin: Email hoặc Số điện thoại");
             return;
         }
 
-        EMAIL = EMAIL || "0";
-        SDT = SDT || "0";
+        EMAIL = EMAIL || "";
+        SDT_ND = SDT_ND || "";
 
         ANHDAIDIEN = ANHDAIDIEN || "noimg.png";
-        VAITRO = VAITRO || "USER";
+        CHUCVU = CHUCVU || "USER";
         NGAYDANGKY = NGAYDANGKY || new Date();
 
         let newData = {
             SDT_ND,
             EMAIL,
-            MATKHAU: bcrypt.hashSync(MatKhau, 10),
+            MATKHAU: bcrypt.hashSync(MATKHAU, 10),
             NGAYSINH,
             GIOITINH,
             HOTEN_ND,
             ANHDAIDIEN,
-            VAITRO,
+            CHUCVU,
             NGAYDANGKY
         };
         
@@ -69,24 +68,24 @@ const signUp = async (req, res) => {
 
 const login = async (req, res) => {
     try {
-        let { Email, SDT, MatKhau } = req.body;
+        let { EMAIL, SDT_ND, MATKHAU } = req.body;
 
-        if (!Email && !SDT) {
+        if (!EMAIL && !SDT_ND) {
             res.status(400).send("Vui lòng cung cấp email hoặc số điện thoại");
             return;
         }
 
-        let checkTK = await model.NguoiDung.findOne({
+        let checkTK = await model.NGUOIDUNG.findOne({
             where: {
                 [Op.or]: [
-                    Email ? { Email } : {}, 
-                    SDT ? { SDT } : {}
+                    EMAIL ? { EMAIL } : {}, 
+                    SDT_ND ? { SDT_ND } : {}
                 ]
             },
         });
 
         if (checkTK) {
-            let checkPass = bcrypt.compareSync(MatKhau, checkTK.MatKhau);
+            let checkPass = bcrypt.compareSync(MATKHAU, checkTK.MATKHAU);
             if (checkPass) {
                 let token = taoToken(checkTK);
                 res.status(200).send(token);
@@ -102,4 +101,4 @@ const login = async (req, res) => {
     }
 };
 
-export {signUp, login}
+export { signUp, login }

@@ -11,11 +11,11 @@ export default class NGUOIDUNG extends Model {
       primaryKey: true
     },
     HOTEN_ND: {
-      type: DataTypes.STRING(255),
+      type: DataTypes.STRING(100),
       allowNull: false
     },
     EMAIL: {
-      type: DataTypes.STRING(255),
+      type: DataTypes.STRING(100),
       allowNull: false
     },
     MATKHAU: {
@@ -34,13 +34,18 @@ export default class NGUOIDUNG extends Model {
       type: DataTypes.TINYINT,
       allowNull: false
     },
-    MA_DP: {
-      type: DataTypes.INTEGER,
+    CHUCVU: {
+      type: DataTypes.STRING(50),
+      allowNull: false
+    },
+    NGAYDANGKY: {
+      type: DataTypes.DATE,
       allowNull: true,
-      references: {
-        model: 'DATPHONG',
-        key: 'MA_DP'
-      }
+      defaultValue: Sequelize.Sequelize.literal('CURRENT_TIMESTAMP')
+    },
+    ANHDAIDIEN: {
+      type: DataTypes.STRING(255),
+      allowNull: true
     }
   }, {
     sequelize,
@@ -53,13 +58,6 @@ export default class NGUOIDUNG extends Model {
         using: "BTREE",
         fields: [
           { name: "MA_ND" },
-        ]
-      },
-      {
-        name: "MA_DP",
-        using: "BTREE",
-        fields: [
-          { name: "MA_DP" },
         ]
       },
     ]

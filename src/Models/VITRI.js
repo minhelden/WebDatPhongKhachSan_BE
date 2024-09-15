@@ -11,15 +11,15 @@ export default class VITRI extends Model {
       primaryKey: true
     },
     TENVITRI: {
-      type: DataTypes.STRING(255),
+      type: DataTypes.STRING(100),
       allowNull: false
     },
     TINHTHANH: {
-      type: DataTypes.STRING(255),
+      type: DataTypes.STRING(50),
       allowNull: false
     },
     QUOCGIA: {
-      type: DataTypes.STRING(255),
+      type: DataTypes.STRING(50),
       allowNull: false
     },
     HINHANH: {

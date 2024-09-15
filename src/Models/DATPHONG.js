@@ -11,20 +11,29 @@ export default class DATPHONG extends Model {
       primaryKey: true
     },
     NGAYDEN: {
-      type: DataTypes.DATEONLY,
+      type: DataTypes.DATE,
       allowNull: false
     },
     NGAYDI: {
-      type: DataTypes.DATEONLY,
+      type: DataTypes.DATE,
       allowNull: false
     },
-    SLKHACH: {
+    SO_LUONG_KHACH: {
       type: DataTypes.INTEGER,
       allowNull: false
+    },
+    MA_MGG: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: 'MAGIAMGIA',
+        key: 'MA_MGG'
+      }
     }
   }, {
     sequelize,
     tableName: 'DATPHONG',
+    hasTrigger: true,
     timestamps: false,
     indexes: [
       {
@@ -33,6 +42,13 @@ export default class DATPHONG extends Model {
         using: "BTREE",
         fields: [
           { name: "MA_DP" },
+        ]
+      },
+      {
+        name: "MA_MGG",
+        using: "BTREE",
+        fields: [
+          { name: "MA_MGG" },
         ]
       },
     ]
