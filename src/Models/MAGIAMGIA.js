@@ -11,12 +11,11 @@ export default class MAGIAMGIA extends Model {
       primaryKey: true
     },
     MA_GIAMGIA: {
-      type: DataTypes.STRING(20),
-      allowNull: false,
-      unique: "MA_GIAMGIA"
+      type: DataTypes.INTEGER,
+      allowNull: false
     },
-    PHANTRAM_GIAM: {
-      type: DataTypes.DECIMAL(5,2),
+    PHANTRAM: {
+      type: DataTypes.INTEGER,
       allowNull: false
     },
     NGAYBATDAU: {
@@ -28,12 +27,13 @@ export default class MAGIAMGIA extends Model {
       allowNull: false
     },
     DIEU_KIEN: {
-      type: DataTypes.TEXT,
+      type: DataTypes.STRING(255),
       allowNull: true
     }
   }, {
     sequelize,
     tableName: 'MAGIAMGIA',
+    hasTrigger: true,
     timestamps: false,
     indexes: [
       {
@@ -42,14 +42,6 @@ export default class MAGIAMGIA extends Model {
         using: "BTREE",
         fields: [
           { name: "MA_MGG" },
-        ]
-      },
-      {
-        name: "MA_GIAMGIA",
-        unique: true,
-        using: "BTREE",
-        fields: [
-          { name: "MA_GIAMGIA" },
         ]
       },
     ]

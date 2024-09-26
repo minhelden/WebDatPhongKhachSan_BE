@@ -7,7 +7,9 @@ const model = initModels(sequelize);
 
 const getHotel = async (req, res) =>{
     try {
-        const data = await model.KHACHSAN.findAll();
+        const data = await model.KHACHSAN.findAll({
+            include: ['MA_VITRI_VITRI']
+        });
         res.status(200).send(data);
     } catch (error) {
         console.log(error);
@@ -22,7 +24,7 @@ const createHotel = async (req, res) =>{
             return res.status(401).send("Người dùng không được xác thực");
         }
         const decodedToken = jwt.verify(token, 'MINHNGHIA');
-        if (decodedToken.data.VAITRO !== "Quản lý") {
+        if (decodedToken.data.VAITRO !== "Admin") {
             return res.status(403).send("Không có quyền truy cập chức năng này");
         }
         let { TEN_KS, MO_TA, MA_VITRI, HINHANH} = req.body;
@@ -65,7 +67,7 @@ const updateHotel = async (req, res) =>{
             return res.status(401).send("Người dùng không được xác thực");
         }
         const decodedToken = jwt.verify(token, 'MINHNGHIA');
-        if (decodedToken.data.VAITRO !== "Quản lý") {
+        if (decodedToken.data.VAITRO !== "Admin") {
             return res.status(403).send("Không có quyền truy cập chức năng này");
         }
         let { MA_KS } = req.params;
@@ -92,7 +94,7 @@ const deleteHotel = async (req, res)=>{
             return res.status(401).send("Người dùng không được xác thực");
         }
         const decodedToken = jwt.verify(token, 'MINHNGHIA');
-        if (decodedToken.data.VAITRO !== "Quản lý") {
+        if (decodedToken.data.VAITRO !== "Admin") {
             return res.status(403).send("Không có quyền truy cập chức năng này");
         }
         let { MA_KS } = req.body;
@@ -121,7 +123,8 @@ const getSearchNameHotel = async (req, res) => {
             TEN_KS: {
                 [Op.like]: `%${TEN_KS}%`
             }
-        }
+        },
+        include: ['MA_VITRI_VITRI']
     });
     res.status(200).send(data);
 }

@@ -14,25 +14,9 @@ export default class PHONG extends Model {
       type: DataTypes.STRING(100),
       allowNull: false
     },
-    KHACH: {
-      type: DataTypes.INTEGER,
-      allowNull: false
-    },
-    PHONGNGU: {
-      type: DataTypes.INTEGER,
-      allowNull: false
-    },
-    GIUONG: {
-      type: DataTypes.INTEGER,
-      allowNull: false
-    },
-    PHONGTAM: {
-      type: DataTypes.INTEGER,
-      allowNull: false
-    },
     MOTA: {
-      type: DataTypes.TEXT,
-      allowNull: true
+      type: DataTypes.STRING(255),
+      allowNull: false
     },
     GIA_TIEN: {
       type: DataTypes.DECIMAL(10,2),
@@ -42,6 +26,10 @@ export default class PHONG extends Model {
       type: DataTypes.STRING(255),
       allowNull: true
     },
+    TRANGTHAIPHG: {
+      type: DataTypes.STRING(50),
+      allowNull: false
+    },
     MA_KS: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -50,10 +38,21 @@ export default class PHONG extends Model {
         key: 'MA_KS'
       }
     },
-    TRANGTHAI: {
-      type: DataTypes.TINYINT,
+    MALOAIPHG: {
+      type: DataTypes.INTEGER,
       allowNull: false,
-      defaultValue: 1
+      references: {
+        model: 'LOAIPHONG',
+        key: 'MALOAIPHG'
+      }
+    },
+    MA_KM: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: 'KHUYENMAI',
+        key: 'MA_KM'
+      }
     }
   }, {
     sequelize,
@@ -73,6 +72,20 @@ export default class PHONG extends Model {
         using: "BTREE",
         fields: [
           { name: "MA_KS" },
+        ]
+      },
+      {
+        name: "MALOAIPHG",
+        using: "BTREE",
+        fields: [
+          { name: "MALOAIPHG" },
+        ]
+      },
+      {
+        name: "MA_KM",
+        using: "BTREE",
+        fields: [
+          { name: "MA_KM" },
         ]
       },
     ]

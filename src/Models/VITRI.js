@@ -14,13 +14,13 @@ export default class VITRI extends Model {
       type: DataTypes.STRING(100),
       allowNull: false
     },
-    TINHTHANH: {
-      type: DataTypes.STRING(50),
-      allowNull: false
-    },
-    QUOCGIA: {
-      type: DataTypes.STRING(50),
-      allowNull: false
+    MA_TINHTHANH: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'TINHTHANH',
+        key: 'MA_TINHTHANH'
+      }
     },
     HINHANH: {
       type: DataTypes.STRING(255),
@@ -37,6 +37,13 @@ export default class VITRI extends Model {
         using: "BTREE",
         fields: [
           { name: "MA_VITRI" },
+        ]
+      },
+      {
+        name: "MA_TINHTHANH",
+        using: "BTREE",
+        fields: [
+          { name: "MA_TINHTHANH" },
         ]
       },
     ]

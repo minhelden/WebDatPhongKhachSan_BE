@@ -1,7 +1,7 @@
 import _sequelize from 'sequelize';
 const { Model, Sequelize } = _sequelize;
 
-export default class DATPHONG extends Model {
+export default class PHIEUDATPHONG extends Model {
   static init(sequelize, DataTypes) {
   return super.init({
     MA_DP: {
@@ -11,20 +11,20 @@ export default class DATPHONG extends Model {
       primaryKey: true
     },
     NGAYDEN: {
-      type: DataTypes.DATE,
+      type: DataTypes.DATEONLY,
       allowNull: false
     },
     NGAYDI: {
-      type: DataTypes.DATE,
+      type: DataTypes.DATEONLY,
       allowNull: false
     },
-    SO_LUONG_KHACH: {
+    SLKHACH: {
       type: DataTypes.INTEGER,
       allowNull: false
     },
     MA_MGG: {
       type: DataTypes.INTEGER,
-      allowNull: true,
+      allowNull: false,
       references: {
         model: 'MAGIAMGIA',
         key: 'MA_MGG'
@@ -32,7 +32,7 @@ export default class DATPHONG extends Model {
     }
   }, {
     sequelize,
-    tableName: 'DATPHONG',
+    tableName: 'PHIEUDATPHONG',
     hasTrigger: true,
     timestamps: false,
     indexes: [

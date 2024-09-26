@@ -11,7 +11,11 @@ export default class TIENNGHI extends Model {
       primaryKey: true
     },
     TENTIENNGHI: {
-      type: DataTypes.STRING(50),
+      type: DataTypes.STRING(100),
+      allowNull: false
+    },
+    GIATIENNGHI: {
+      type: DataTypes.DECIMAL(10,2),
       allowNull: false
     }
   }, {

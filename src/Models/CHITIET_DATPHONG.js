@@ -4,14 +4,14 @@ const { Model, Sequelize } = _sequelize;
 export default class CHITIET_DATPHONG extends Model {
   static init(sequelize, DataTypes) {
   return super.init({
-    MA_DP: {
-      type: DataTypes.INTEGER,
+    NGAYDATPHG: {
+      type: DataTypes.DATEONLY,
       allowNull: false,
-      primaryKey: true,
-      references: {
-        model: 'DATPHONG',
-        key: 'MA_DP'
-      }
+      primaryKey: true
+    },
+    TRANGTHAI: {
+      type: DataTypes.STRING(50),
+      allowNull: false
     },
     MA_PHONG: {
       type: DataTypes.INTEGER,
@@ -20,6 +20,24 @@ export default class CHITIET_DATPHONG extends Model {
       references: {
         model: 'PHONG',
         key: 'MA_PHONG'
+      }
+    },
+    MA_DP: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      primaryKey: true,
+      references: {
+        model: 'PHIEUDATPHONG',
+        key: 'MA_DP'
+      }
+    },
+    MA_ND: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      primaryKey: true,
+      references: {
+        model: 'NGUOIDUNG',
+        key: 'MA_ND'
       }
     }
   }, {
@@ -33,8 +51,10 @@ export default class CHITIET_DATPHONG extends Model {
         unique: true,
         using: "BTREE",
         fields: [
-          { name: "MA_DP" },
+          { name: "NGAYDATPHG" },
           { name: "MA_PHONG" },
+          { name: "MA_DP" },
+          { name: "MA_ND" },
         ]
       },
       {
@@ -42,6 +62,20 @@ export default class CHITIET_DATPHONG extends Model {
         using: "BTREE",
         fields: [
           { name: "MA_PHONG" },
+        ]
+      },
+      {
+        name: "MA_DP",
+        using: "BTREE",
+        fields: [
+          { name: "MA_DP" },
+        ]
+      },
+      {
+        name: "MA_ND",
+        using: "BTREE",
+        fields: [
+          { name: "MA_ND" },
         ]
       },
     ]

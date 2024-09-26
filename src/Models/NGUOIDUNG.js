@@ -31,7 +31,7 @@ export default class NGUOIDUNG extends Model {
       allowNull: false
     },
     GIOITINH: {
-      type: DataTypes.TINYINT,
+      type: DataTypes.ENUM('Nam','Nữ','Khác'),
       allowNull: false
     },
     CHUCVU: {
@@ -39,9 +39,8 @@ export default class NGUOIDUNG extends Model {
       allowNull: false
     },
     NGAYDANGKY: {
-      type: DataTypes.DATE,
-      allowNull: true,
-      defaultValue: Sequelize.Sequelize.literal('CURRENT_TIMESTAMP')
+      type: DataTypes.DATEONLY,
+      allowNull: false
     },
     ANHDAIDIEN: {
       type: DataTypes.STRING(255),

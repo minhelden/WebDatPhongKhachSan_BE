@@ -1,30 +1,46 @@
 import _sequelize from 'sequelize';
 const { Model, Sequelize } = _sequelize;
 
-export default class PHONG_KHUYENMAI extends Model {
+export default class DANHGIA extends Model {
   static init(sequelize, DataTypes) {
   return super.init({
+    MA_DG: {
+      autoIncrement: true,
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      primaryKey: true
+    },
     MA_PHONG: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      primaryKey: true,
       references: {
         model: 'PHONG',
         key: 'MA_PHONG'
       }
     },
-    MA_KM: {
+    MA_ND: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      primaryKey: true,
       references: {
-        model: 'KHUYENMAI',
-        key: 'MA_KM'
+        model: 'NGUOIDUNG',
+        key: 'MA_ND'
       }
+    },
+    SO_SAO: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
+    BINH_LUAN: {
+      type: DataTypes.STRING(255),
+      allowNull: true
+    },
+    NGAY_DG: {
+      type: DataTypes.DATEONLY,
+      allowNull: false
     }
   }, {
     sequelize,
-    tableName: 'PHONG_KHUYENMAI',
+    tableName: 'DANHGIA',
     timestamps: false,
     indexes: [
       {
@@ -32,15 +48,21 @@ export default class PHONG_KHUYENMAI extends Model {
         unique: true,
         using: "BTREE",
         fields: [
-          { name: "MA_PHONG" },
-          { name: "MA_KM" },
+          { name: "MA_DG" },
         ]
       },
       {
-        name: "MA_KM",
+        name: "MA_PHONG",
         using: "BTREE",
         fields: [
-          { name: "MA_KM" },
+          { name: "MA_PHONG" },
+        ]
+      },
+      {
+        name: "MA_ND",
+        using: "BTREE",
+        fields: [
+          { name: "MA_ND" },
         ]
       },
     ]

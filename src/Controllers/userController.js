@@ -3,6 +3,7 @@ import initModels from "../Models/init-models.js";
 import bcrypt from "bcrypt";
 import {taoToken} from "../Config/jwtConfig.js";
 import { Sequelize } from 'sequelize';
+import jwt from "jsonwebtoken";
 
 const Op = Sequelize.Op;
 const model = initModels(sequelize);
@@ -43,19 +44,19 @@ const signUp = async (req, res) => {
         SDT_ND = SDT_ND || "";
 
         ANHDAIDIEN = ANHDAIDIEN || "noimg.png";
-        CHUCVU = CHUCVU || "USER";
+        CHUCVU = CHUCVU || "Customer";
         NGAYDANGKY = NGAYDANGKY || new Date();
 
         let newData = {
-            SDT_ND,
+            HOTEN_ND,
             EMAIL,
             MATKHAU: bcrypt.hashSync(MATKHAU, 10),
+            SDT_ND,
             NGAYSINH,
             GIOITINH,
-            HOTEN_ND,
-            ANHDAIDIEN,
             CHUCVU,
-            NGAYDANGKY
+            NGAYDANGKY,
+            ANHDAIDIEN
         };
         
         await model.NGUOIDUNG.create(newData);
@@ -66,7 +67,7 @@ const signUp = async (req, res) => {
     }
 };
 
-const login = async (req, res) => {
+const loginAdmin = async (req, res) => { 
     try {
         let { EMAIL, SDT_ND, MATKHAU } = req.body;
 
@@ -85,6 +86,10 @@ const login = async (req, res) => {
         });
 
         if (checkTK) {
+            if (checkTK.CHUCVU !== "Admin") {
+                res.status(403).send("Chỉ Admin mới có thể đăng nhập");
+                return;
+            }
             let checkPass = bcrypt.compareSync(MATKHAU, checkTK.MATKHAU);
             if (checkPass) {
                 let token = taoToken(checkTK);
@@ -101,4 +106,172 @@ const login = async (req, res) => {
     }
 };
 
-export { signUp, login }
+
+const loginUser = async (req, res) => { 
+    try {
+        let { EMAIL, SDT_ND, MATKHAU } = req.body;
+
+        if (!EMAIL && !SDT_ND) {
+            res.status(400).send("Vui lòng cung cấp email hoặc số điện thoại");
+            return;
+        }
+
+        let checkTK = await model.NGUOIDUNG.findOne({
+            where: {
+                [Op.or]: [
+                    EMAIL ? { EMAIL } : {}, 
+                    SDT_ND ? { SDT_ND } : {}
+                ]
+            },
+        });
+
+        if (checkTK) {
+            if (checkTK.CHUCVU !== "Customer") {
+                res.status(403).send("Chỉ Customer mới có thể đăng nhập");
+                return;
+            }
+            let checkPass = bcrypt.compareSync(MATKHAU, checkTK.MATKHAU);
+            if (checkPass) {
+                let token = taoToken(checkTK);
+                res.status(200).send(token);
+            } else {
+                res.status(400).send("Mật khẩu không đúng");
+            }
+        } else {
+            res.status(400).send("Tài khoản không đúng");
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).send("Đã có lỗi trong quá trình xử lý");
+    }
+};
+
+
+const getUserAll = async(req, res) =>{
+    try {
+        const token = req.headers.token;
+
+        if (!token) {
+            return res.status(401).send("Người dùng không được xác thực");
+        }
+
+        const decodedToken = jwt.verify(token, 'MINHNGHIA');
+
+        if (decodedToken.data.CHUCVU !== "Admin") {
+            return res.status(403).send("Không có quyền truy cập chức năng này");
+        }
+        const data = await model.NGUOIDUNG.findAll();
+        res.status(200).send(data);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Lỗi khi lấy dữ liệu");
+    }
+}
+
+const selectUser = async (req, res) => {
+    try {
+        const { MA_ND } = req.params;
+        const token = req.headers.token;
+
+        if (!token) {
+            return res.status(401).send("Người dùng không được xác thực");
+        }
+        
+        const decodedToken = jwt.verify(token, 'MINHNGHIA');
+        const currentUserID = decodedToken.data.MA_ND;
+        if (Number(MA_ND) !== currentUserID && (decodedToken.data.CHUCVU !== "Admin" && decodedToken.data.CHUCVU !== "Nhân viên")) {
+            return res.status(403).send("Không có quyền truy cập thông tin người dùng này");
+        }
+            
+        const data = await model.NGUOIDUNG.findOne({
+            where: {
+                MA_ND: MA_ND
+            },
+            attributes: { exclude: ['MATKHAU']} 
+        });
+
+        if (!data) {
+            return res.status(404).send("Không tìm thấy người dùng");
+        }
+
+        res.send(data);
+    } catch (error) {
+        console.log(error);
+        return res.status(500).send("Lỗi xác thực token");
+    }
+}
+
+const updateUser = async(req, res) =>{
+    try {
+        let { MA_ND } = req.params;
+        let { EMAIL, SDT_ND, NGAYSINH, GIOITINH } = req.body;
+        const token = req.headers.token;
+
+        if (!token) {
+            return res.status(401).send("Người dùng không được xác thực");
+        }
+        const decodedToken = jwt.verify(token, 'MINHNGHIA');
+        const currentUserID = decodedToken.data.MA_ND;
+
+        if (Number(MA_ND) !== currentUserID) {
+            return res.status(403).send("Không có quyền truy cập thông tin người dùng này");
+        }
+
+        await model.NGUOIDUNG.update(
+            {EMAIL, SDT_ND, NGAYSINH, GIOITINH},
+            {
+                where:{
+                    MA_ND
+                }
+            }
+        );
+        res.status(200).send("Cập nhật thông tin người dùng thành công!");
+    } catch (error) {
+        console.log(error);
+        res.status(500).send("Đã có lỗi trong quá trình xử lý!");
+    }
+} 
+
+const deleteUser = async (req, res) => {
+    try {
+        const token = req.headers.token;
+
+        if (!token) {
+            return res.status(401).send("Người dùng không được xác thực");
+        }
+
+        const decodedToken = jwt.verify(token, 'MINHNGHIA');
+        if (decodedToken.data.CHUCVU !== "Admin") {
+            return res.status(403).send("Không có quyền truy cập chức năng này");
+        }
+
+        let { MA_ND } = req.params;
+        await model.NGUOIDUNG.destroy({
+            where:{
+                MA_ND: MA_ND
+            }
+        });
+        res.status(200).send("Xóa người dùng thành công!");
+    } catch (error) {
+        console.log(error);
+        res.status(500).send("Đã có lỗi trong quá trình xử lý!");
+    }
+};
+
+const logout = async (req, res) => {
+    try {
+      const token = req.headers.authorization || req.body.token;
+  
+      if (!token) {
+        return res.status(401).send("Token không hợp lệ");
+      }
+  
+      blacklistedTokens.push(token);
+  
+      res.status(200).send("Đã đăng xuất thành công");
+    } catch (error) {
+      res.status(500).send("Đã có lỗi trong quá trình xử lý");
+    }
+};
+
+export { signUp, loginUser, getUserAll, logout, selectUser, updateUser, deleteUser, loginAdmin }

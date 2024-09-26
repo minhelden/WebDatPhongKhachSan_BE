@@ -4,14 +4,9 @@ const { Model, Sequelize } = _sequelize;
 export default class PHONG_TIENNGHI extends Model {
   static init(sequelize, DataTypes) {
   return super.init({
-    MA_PHONG: {
+    SLTIENNGHI: {
       type: DataTypes.INTEGER,
-      allowNull: false,
-      primaryKey: true,
-      references: {
-        model: 'PHONG',
-        key: 'MA_PHONG'
-      }
+      allowNull: false
     },
     MA_TIENNGHI: {
       type: DataTypes.INTEGER,
@@ -20,6 +15,15 @@ export default class PHONG_TIENNGHI extends Model {
       references: {
         model: 'TIENNGHI',
         key: 'MA_TIENNGHI'
+      }
+    },
+    MA_PHONG: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      primaryKey: true,
+      references: {
+        model: 'PHONG',
+        key: 'MA_PHONG'
       }
     }
   }, {
@@ -32,15 +36,15 @@ export default class PHONG_TIENNGHI extends Model {
         unique: true,
         using: "BTREE",
         fields: [
-          { name: "MA_PHONG" },
           { name: "MA_TIENNGHI" },
+          { name: "MA_PHONG" },
         ]
       },
       {
-        name: "MA_TIENNGHI",
+        name: "MA_PHONG",
         using: "BTREE",
         fields: [
-          { name: "MA_TIENNGHI" },
+          { name: "MA_PHONG" },
         ]
       },
     ]

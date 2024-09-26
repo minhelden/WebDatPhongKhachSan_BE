@@ -1,30 +1,26 @@
 import _sequelize from 'sequelize';
 const { Model, Sequelize } = _sequelize;
 
-export default class LICHSU_DATPHONG extends Model {
+export default class QUOCGIA extends Model {
   static init(sequelize, DataTypes) {
   return super.init({
-    MA_DP: {
+    MA_QUOCGIA: {
+      autoIncrement: true,
       type: DataTypes.INTEGER,
       allowNull: false,
-      primaryKey: true,
-      references: {
-        model: 'DATPHONG',
-        key: 'MA_DP'
-      }
+      primaryKey: true
     },
-    TRANGTHAI: {
-      type: DataTypes.STRING(50),
+    TEN_QUOCGIA: {
+      type: DataTypes.STRING(100),
       allowNull: false
     },
-    NGAYCAPNHAT: {
-      type: DataTypes.DATE,
-      allowNull: false,
-      primaryKey: true
+    HINHANH: {
+      type: DataTypes.STRING(255),
+      allowNull: true
     }
   }, {
     sequelize,
-    tableName: 'LICHSU_DATPHONG',
+    tableName: 'QUOCGIA',
     timestamps: false,
     indexes: [
       {
@@ -32,8 +28,7 @@ export default class LICHSU_DATPHONG extends Model {
         unique: true,
         using: "BTREE",
         fields: [
-          { name: "MA_DP" },
-          { name: "NGAYCAPNHAT" },
+          { name: "MA_QUOCGIA" },
         ]
       },
     ]

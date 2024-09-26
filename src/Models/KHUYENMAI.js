@@ -14,8 +14,8 @@ export default class KHUYENMAI extends Model {
       type: DataTypes.STRING(100),
       allowNull: false
     },
-    PHANTRAM_GIAM: {
-      type: DataTypes.DECIMAL(5,2),
+    PHANTRAM: {
+      type: DataTypes.INTEGER,
       allowNull: false
     },
     NGAYBATDAU: {
