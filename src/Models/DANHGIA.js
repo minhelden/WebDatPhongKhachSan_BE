@@ -10,12 +10,24 @@ export default class DANHGIA extends Model {
       allowNull: false,
       primaryKey: true
     },
-    MA_PHONG: {
+    SO_SAO: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
+    BINH_LUAN: {
+      type: DataTypes.TEXT,
+      allowNull: false
+    },
+    NGAY_DG: {
+      type: DataTypes.DATEONLY,
+      allowNull: false
+    },
+    MA_KS: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: 'PHONG',
-        key: 'MA_PHONG'
+        model: 'KHACHSAN',
+        key: 'MA_KS'
       }
     },
     MA_ND: {
@@ -25,18 +37,6 @@ export default class DANHGIA extends Model {
         model: 'NGUOIDUNG',
         key: 'MA_ND'
       }
-    },
-    SO_SAO: {
-      type: DataTypes.INTEGER,
-      allowNull: false
-    },
-    BINH_LUAN: {
-      type: DataTypes.STRING(255),
-      allowNull: true
-    },
-    NGAY_DG: {
-      type: DataTypes.DATEONLY,
-      allowNull: false
     }
   }, {
     sequelize,
@@ -52,10 +52,10 @@ export default class DANHGIA extends Model {
         ]
       },
       {
-        name: "MA_PHONG",
+        name: "MA_KS",
         using: "BTREE",
         fields: [
-          { name: "MA_PHONG" },
+          { name: "MA_KS" },
         ]
       },
       {

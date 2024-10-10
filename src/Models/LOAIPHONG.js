@@ -4,7 +4,7 @@ const { Model, Sequelize } = _sequelize;
 export default class LOAIPHONG extends Model {
   static init(sequelize, DataTypes) {
   return super.init({
-    MALOAIPHG: {
+    MA_LOAIPHG: {
       autoIncrement: true,
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -36,7 +36,7 @@ export default class LOAIPHONG extends Model {
         unique: true,
         using: "BTREE",
         fields: [
-          { name: "MALOAIPHG" },
+          { name: "MA_LOAIPHG" },
         ]
       },
     ]

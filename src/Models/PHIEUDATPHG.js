@@ -1,7 +1,7 @@
 import _sequelize from 'sequelize';
 const { Model, Sequelize } = _sequelize;
 
-export default class PHIEUDATPHONG extends Model {
+export default class PHIEUDATPHG extends Model {
   static init(sequelize, DataTypes) {
   return super.init({
     MA_DP: {
@@ -22,17 +22,45 @@ export default class PHIEUDATPHONG extends Model {
       type: DataTypes.INTEGER,
       allowNull: false
     },
+    TRANGTHAI: {
+      type: DataTypes.STRING(50),
+      allowNull: false
+    },
+    NGAYDATPHG: {
+      type: DataTypes.DATEONLY,
+      allowNull: false
+    },
+    THANHTIEN: {
+      type: DataTypes.DECIMAL(15,3),
+      allowNull: false
+    },
     MA_MGG: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING(6),
       allowNull: false,
       references: {
         model: 'MAGIAMGIA',
         key: 'MA_MGG'
       }
+    },
+    MA_ND: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'NGUOIDUNG',
+        key: 'MA_ND'
+      }
+    },
+    MA_PHONG: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'PHONG',
+        key: 'MA_PHONG'
+      }
     }
   }, {
     sequelize,
-    tableName: 'PHIEUDATPHONG',
+    tableName: 'PHIEUDATPHG',
     hasTrigger: true,
     timestamps: false,
     indexes: [
@@ -49,6 +77,20 @@ export default class PHIEUDATPHONG extends Model {
         using: "BTREE",
         fields: [
           { name: "MA_MGG" },
+        ]
+      },
+      {
+        name: "MA_ND",
+        using: "BTREE",
+        fields: [
+          { name: "MA_ND" },
+        ]
+      },
+      {
+        name: "MA_PHONG",
+        using: "BTREE",
+        fields: [
+          { name: "MA_PHONG" },
         ]
       },
     ]

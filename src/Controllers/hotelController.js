@@ -17,6 +17,123 @@ const getHotel = async (req, res) =>{
     }
 }
 
+const getHotelLocal = async (req,res) =>{
+    try {
+        const { MA_VITRI } = req.params;
+        const data = await model.KHACHSAN.findAll({
+            where: {
+                MA_VITRI: MA_VITRI  
+            },
+            include: [
+                {
+                    model: model.VITRI,
+                    as: 'MA_VITRI_VITRI',
+                    required: true,
+                    attributes: ['TENVITRI'],
+                    include: [
+                        {
+                            model: model.TINHTHANH,
+                            as: 'MA_TINHTHANH_TINHTHANH',
+                            required: true,
+                            attributes: ['TEN_TINHTHANH'],
+                            include: [
+                                {
+                                    model: model.QUOCGIA,
+                                    as: 'MA_QUOCGIA_QUOCGIum',
+                                    required: true,
+                                    attributes: ['TEN_QUOCGIA']
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        });
+        res.status(200).send(data);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send("Lỗi khi lấy dữ liệu")
+    }
+}
+
+const getHotelCountry = async (req, res) => {
+    try {
+        const { MA_QUOCGIA } = req.params;
+        const data = await model.KHACHSAN.findAll({
+            include: [
+                {
+                    model: model.VITRI, 
+                    as: 'MA_VITRI_VITRI',
+                    required: true,
+                    attributes: ['TENVITRI'], 
+                    include: [
+                        {
+                            model: model.TINHTHANH,
+                            as: 'MA_TINHTHANH_TINHTHANH',
+                            required: true,
+                            attributes: ['TEN_TINHTHANH'], 
+                            where: {
+                                MA_QUOCGIA: MA_QUOCGIA
+                            },
+                            include: [
+                                {
+                                    model: model.QUOCGIA,
+                                    as: 'MA_QUOCGIA_QUOCGIum',
+                                    required: true,
+                                    attributes: ['TEN_QUOCGIA']
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        });
+        res.status(200).send(data);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send("Lỗi khi lấy dữ liệu");
+    }
+};
+
+const getHotelID = async (req, res) => {
+    try {
+        const { MA_KS } = req.params;
+        const data = await model.KHACHSAN.findAll({
+            where: {
+                MA_KS: MA_KS
+            },
+            include: [
+                {
+                    model: model.VITRI, 
+                    as: 'MA_VITRI_VITRI',
+                    attributes: ['TENVITRI'], 
+                    include: [
+                        {
+                            model: model.TINHTHANH,
+                            as: 'MA_TINHTHANH_TINHTHANH',
+                            required: true,
+                            attributes: ['TEN_TINHTHANH'],
+                            include: [
+                                {
+                                    model: model.QUOCGIA,
+                                    as: 'MA_QUOCGIA_QUOCGIum',
+                                    required: true,
+                                    attributes: ['TEN_QUOCGIA']
+                                }
+                            ]
+                        }
+                    ],
+                }
+            ]
+        });
+        res.status(200).send(data);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send("Lỗi khi lấy dữ liệu");
+    }
+};
+
+
 const createHotel = async (req, res) =>{
     try {
         const token = req.headers.token;
@@ -129,4 +246,4 @@ const getSearchNameHotel = async (req, res) => {
     res.status(200).send(data);
 }
 
-export { getHotel, createHotel, updateHotel, deleteHotel, selectHotel, getSearchNameHotel }
+export { getHotel, createHotel, updateHotel, deleteHotel, selectHotel, getSearchNameHotel, getHotelLocal, getHotelCountry, getHotelID }

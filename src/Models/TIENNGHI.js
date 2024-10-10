@@ -13,10 +13,6 @@ export default class TIENNGHI extends Model {
     TENTIENNGHI: {
       type: DataTypes.STRING(100),
       allowNull: false
-    },
-    GIATIENNGHI: {
-      type: DataTypes.DECIMAL(10,2),
-      allowNull: false
     }
   }, {
     sequelize,

@@ -10,7 +10,7 @@ const model = initModels(sequelize);
 
 const signUp = async (req, res) => {
     try {
-        let { HOTEN_ND, EMAIL, MATKHAU, SDT_ND, NGAYSINH, GIOITINH, NGAYDANGKY, ANHDAIDIEN, CHUCVU } = req.body;
+        let { HOTEN, EMAIL, MATKHAU, SDT, NGAYSINH, GIOITINH, NGAYDANGKY, ANHDAIDIEN, CHUCVU } = req.body;
         
         const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,}$/;
         if (!passwordRegex.test(MATKHAU)) {
@@ -19,8 +19,8 @@ const signUp = async (req, res) => {
         }
 
         let whereCondition = {};
-        if (SDT_ND) {
-            whereCondition.SDT_ND = SDT_ND;
+        if (SDT) {
+            whereCondition.SDT = SDT;
         }
         if (EMAIL) {
             whereCondition.EMAIL = EMAIL;
@@ -35,23 +35,23 @@ const signUp = async (req, res) => {
             return;
         }
         
-        if (!SDT_ND && !EMAIL) {
+        if (!SDT && !EMAIL) {
             res.status(400).send("Vui lòng cung cấp ít nhất một trong hai thông tin: Email hoặc Số điện thoại");
             return;
         }
 
         EMAIL = EMAIL || "";
-        SDT_ND = SDT_ND || "";
+        SDT = SDT || "";
 
         ANHDAIDIEN = ANHDAIDIEN || "noimg.png";
         CHUCVU = CHUCVU || "Customer";
         NGAYDANGKY = NGAYDANGKY || new Date();
 
         let newData = {
-            HOTEN_ND,
+            HOTEN,
             EMAIL,
             MATKHAU: bcrypt.hashSync(MATKHAU, 10),
-            SDT_ND,
+            SDT,
             NGAYSINH,
             GIOITINH,
             CHUCVU,

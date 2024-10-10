@@ -5,14 +5,9 @@ export default class MAGIAMGIA extends Model {
   static init(sequelize, DataTypes) {
   return super.init({
     MA_MGG: {
-      autoIncrement: true,
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING(6),
       allowNull: false,
       primaryKey: true
-    },
-    MA_GIAMGIA: {
-      type: DataTypes.INTEGER,
-      allowNull: false
     },
     PHANTRAM: {
       type: DataTypes.INTEGER,
@@ -28,12 +23,11 @@ export default class MAGIAMGIA extends Model {
     },
     DIEU_KIEN: {
       type: DataTypes.STRING(255),
-      allowNull: true
+      allowNull: false
     }
   }, {
     sequelize,
     tableName: 'MAGIAMGIA',
-    hasTrigger: true,
     timestamps: false,
     indexes: [
       {

@@ -10,7 +10,7 @@ export default class NGUOIDUNG extends Model {
       allowNull: false,
       primaryKey: true
     },
-    HOTEN_ND: {
+    HOTEN: {
       type: DataTypes.STRING(100),
       allowNull: false
     },
@@ -22,7 +22,7 @@ export default class NGUOIDUNG extends Model {
       type: DataTypes.STRING(255),
       allowNull: false
     },
-    SDT_ND: {
+    SDT: {
       type: DataTypes.STRING(15),
       allowNull: false
     },
@@ -31,7 +31,7 @@ export default class NGUOIDUNG extends Model {
       allowNull: false
     },
     GIOITINH: {
-      type: DataTypes.ENUM('Nam','Nữ','Khác'),
+      type: DataTypes.ENUM('Nam','Nữ'),
       allowNull: false
     },
     CHUCVU: {
@@ -44,11 +44,12 @@ export default class NGUOIDUNG extends Model {
     },
     ANHDAIDIEN: {
       type: DataTypes.STRING(255),
-      allowNull: true
+      allowNull: false
     }
   }, {
     sequelize,
     tableName: 'NGUOIDUNG',
+    hasTrigger: true,
     timestamps: false,
     indexes: [
       {

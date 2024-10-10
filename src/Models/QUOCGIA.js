@@ -16,7 +16,7 @@ export default class QUOCGIA extends Model {
     },
     HINHANH: {
       type: DataTypes.STRING(255),
-      allowNull: true
+      allowNull: false
     }
   }, {
     sequelize,

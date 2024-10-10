@@ -14,6 +14,10 @@ export default class VITRI extends Model {
       type: DataTypes.STRING(100),
       allowNull: false
     },
+    HINHANH: {
+      type: DataTypes.STRING(255),
+      allowNull: false
+    },
     MA_TINHTHANH: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -21,10 +25,6 @@ export default class VITRI extends Model {
         model: 'TINHTHANH',
         key: 'MA_TINHTHANH'
       }
-    },
-    HINHANH: {
-      type: DataTypes.STRING(255),
-      allowNull: true
     }
   }, {
     sequelize,

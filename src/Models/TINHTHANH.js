@@ -14,6 +14,10 @@ export default class TINHTHANH extends Model {
       type: DataTypes.STRING(100),
       allowNull: false
     },
+    HINHANH: {
+      type: DataTypes.STRING(255),
+      allowNull: false
+    },
     MA_QUOCGIA: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -21,10 +25,6 @@ export default class TINHTHANH extends Model {
         model: 'QUOCGIA',
         key: 'MA_QUOCGIA'
       }
-    },
-    HINHANH: {
-      type: DataTypes.STRING(255),
-      allowNull: true
     }
   }, {
     sequelize,

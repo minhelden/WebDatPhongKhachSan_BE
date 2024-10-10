@@ -22,21 +22,19 @@ const createRoom = async (req, res) =>{
             return res.status(401).send("Người dùng không được xác thực");
         }
         const decodedToken = jwt.verify(token, 'MINHNGHIA');
-        if (decodedToken.data.VAITRO !== "Quản lý") {
+        if (decodedToken.data.VAITRO !== "Admin") {
             return res.status(403).send("Không có quyền truy cập chức năng này");
         }
-        let { TENPHONG, KHACH, PHONGNGU, GIUONG, PHONGTAM, MOTA, GIA_TIEN, HINHANH, MA_KS, TRANGTHAI} = req.body;
+        let { TENPHONG, MOTA, GIATIEN, HINHANH, TRANGTHAIPHG, MA_KS, MA_KM, MA_LOAIPHG } = req.body;
         let roomData = {
             TENPHONG,
-            KHACH,
-            PHONGNGU,
-            GIUONG,
-            PHONGTAM,
             MOTA,
-            GIA_TIEN,
+            GIATIEN,
             HINHANH,
+            TRANGTHAIPHG, 
             MA_KS,
-            TRANGTHAI
+            MA_KM,
+            MA_LOAIPHG
         }
         await model.PHONG.create(roomData);
         res.status(200).send("Bạn đã tạo phòng thành công");
@@ -75,9 +73,9 @@ const updateRoom = async (req, res) =>{
             return res.status(403).send("Không có quyền truy cập chức năng này");
         }
         let { MA_PHONG } = req.params;
-        let { TENPHONG, KHACH, PHONGNGU, GIUONG, PHONGTAM, MOTA, GIA_TIEN, HINHANH, MA_KS, TRANGTHAI } = req.body;
+        let { TENPHONG, MOTA, GIATIEN, HINHANH, TRANGTHAIPHG, MA_KS, MA_KM, MA_LOAIPHG } = req.body;
         await model.PHONG.update(
-            { TENPHONG, KHACH, PHONGNGU, GIUONG, PHONGTAM, MOTA, GIA_TIEN, HINHANH, MA_KS, TRANGTHAI },
+            { TENPHONG, MOTA, GIATIEN, HINHANH, TRANGTHAIPHG, MA_KS, MA_KM, MA_LOAIPHG },
             {
                 where:{
                     MA_PHONG
@@ -132,4 +130,107 @@ const getSearchNameRoom = async (req, res) => {
     res.status(200).send(data);
 }
 
-export { getRoom, createRoom, updateRoom, deleteRoom, selectRoom, getSearchNameRoom } 
+const getRoomID = async (req, res) => {
+    const { MA_PHONG } = req.params;
+    const data = await model.PHONG.findOne({
+        where:{
+            MA_PHONG: MA_PHONG
+        }
+    });
+    res.status(200).send(data);
+}
+
+const getConvenient = async (req, res) =>{
+    const { MA_KS } = req.params;
+    const data = await model.KHACHSAN_TIENNGHI.findAll({
+        where:{
+            MA_KS: MA_KS
+        }
+    })
+    res.status(200).send(data);
+}
+
+const getPrice = async (req, res) => {
+    const { MA_KS } = req.params;
+    try {
+        const minPrice = await model.PHONG.min('GIATIEN', {
+            where: {
+                MA_KS: MA_KS
+            }
+        });
+        
+        if (minPrice === null) {
+            return res.status(404).send({ message: "Không tìm thấy phòng cho khách sạn này." });
+        }
+
+        res.status(200).send({ GIATIEN: minPrice });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send({ message: "Có lỗi xảy ra khi lấy dữ liệu." });
+    }
+}
+
+const getPriceDiscount = async (req, res) => {
+    const { MA_KS } = req.params;
+    try {
+        const data = await model.PHONG.findAll({
+            where: {
+                MA_KS: MA_KS
+            },
+            attributes: ['GIATIEN'],
+            include: [
+                {
+                    model: model.KHUYENMAI,
+                    as: 'MA_KM_KHUYENMAI',
+                    required: false, 
+                    attributes: ['PHANTRAM'] 
+                }
+            ]
+        });
+
+        let minRoom = null;
+        let minPrice = Infinity;
+
+        data.forEach(item => {
+            const giaGoc = item.GIATIEN;
+            const discountPercent = item.MA_KM_KHUYENMAI ? item.MA_KM_KHUYENMAI.PHANTRAM : null;
+
+            if (discountPercent !== null) {
+                // Tính giá đã giảm nếu có khuyến mãi
+                const giaDaGiam = giaGoc * (100 - discountPercent) / 100;
+
+                // Cập nhật giá đã giảm nếu thấp hơn giá tối thiểu hiện tại
+                if (giaDaGiam < minPrice) {
+                    minPrice = giaDaGiam;
+                    minRoom = {
+                        giaGoc: Math.round(giaGoc), // Làm tròn giá gốc
+                        giaDaGiam: Math.round(giaDaGiam) // Làm tròn giá đã giảm
+                    };
+                }
+            } else {
+                // Nếu không có khuyến mãi, chỉ so sánh giá gốc
+                if (giaGoc < minPrice) {
+                    minPrice = giaGoc;
+                    minRoom = {
+                        giaGoc: Math.round(giaGoc), // Làm tròn giá gốc
+                        giaDaGiam: null // Bỏ giá đã giảm
+                    };
+                }
+            }
+        });
+
+        if (minRoom) {
+            res.status(200).send(minRoom);
+        } else {
+            res.status(404).send({ message: "Không tìm thấy phòng trong khách sạn này." });
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).send({ message: "Có lỗi xảy ra khi lấy dữ liệu." });
+    }
+};
+
+
+
+
+export { getRoom, createRoom, updateRoom, deleteRoom, selectRoom, getSearchNameRoom, getRoomID, getConvenient, getPrice, getPriceDiscount} 

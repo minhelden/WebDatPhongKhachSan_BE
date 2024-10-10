@@ -15,19 +15,19 @@ export default class PHONG extends Model {
       allowNull: false
     },
     MOTA: {
-      type: DataTypes.STRING(255),
+      type: DataTypes.TEXT,
       allowNull: false
     },
-    GIA_TIEN: {
-      type: DataTypes.DECIMAL(10,2),
+    GIATIEN: {
+      type: DataTypes.DECIMAL(10,3),
       allowNull: false
     },
     HINHANH: {
       type: DataTypes.STRING(255),
-      allowNull: true
+      allowNull: false
     },
     TRANGTHAIPHG: {
-      type: DataTypes.STRING(50),
+      type: DataTypes.ENUM('Trống','Đã đặt','Bảo trì'),
       allowNull: false
     },
     MA_KS: {
@@ -38,20 +38,20 @@ export default class PHONG extends Model {
         key: 'MA_KS'
       }
     },
-    MALOAIPHG: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: {
-        model: 'LOAIPHONG',
-        key: 'MALOAIPHG'
-      }
-    },
     MA_KM: {
       type: DataTypes.INTEGER,
       allowNull: true,
       references: {
         model: 'KHUYENMAI',
         key: 'MA_KM'
+      }
+    },
+    MA_LOAIPHG: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'LOAIPHONG',
+        key: 'MA_LOAIPHG'
       }
     }
   }, {
@@ -75,17 +75,17 @@ export default class PHONG extends Model {
         ]
       },
       {
-        name: "MALOAIPHG",
-        using: "BTREE",
-        fields: [
-          { name: "MALOAIPHG" },
-        ]
-      },
-      {
         name: "MA_KM",
         using: "BTREE",
         fields: [
           { name: "MA_KM" },
+        ]
+      },
+      {
+        name: "MA_LOAIPHG",
+        using: "BTREE",
+        fields: [
+          { name: "MA_LOAIPHG" },
         ]
       },
     ]

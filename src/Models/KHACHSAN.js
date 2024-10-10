@@ -15,12 +15,20 @@ export default class KHACHSAN extends Model {
       allowNull: false
     },
     MO_TA: {
-      type: DataTypes.STRING(255),
+      type: DataTypes.TEXT,
       allowNull: false
     },
     HINHANH: {
       type: DataTypes.STRING(255),
-      allowNull: true
+      allowNull: false
+    },
+    TRANGTHAI_KS: {
+      type: DataTypes.ENUM('Hoạt động','Ngừng hoạt động'),
+      allowNull: false
+    },
+    QRTHANHTOAN: {
+      type: DataTypes.STRING(255),
+      allowNull: false
     },
     MA_VITRI: {
       type: DataTypes.INTEGER,
@@ -33,6 +41,7 @@ export default class KHACHSAN extends Model {
   }, {
     sequelize,
     tableName: 'KHACHSAN',
+    hasTrigger: true,
     timestamps: false,
     indexes: [
       {

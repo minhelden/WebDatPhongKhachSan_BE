@@ -1,13 +1,9 @@
 import _sequelize from 'sequelize';
 const { Model, Sequelize } = _sequelize;
 
-export default class PHONG_TIENNGHI extends Model {
+export default class KHACHSAN_TIENNGHI extends Model {
   static init(sequelize, DataTypes) {
   return super.init({
-    SLTIENNGHI: {
-      type: DataTypes.INTEGER,
-      allowNull: false
-    },
     MA_TIENNGHI: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -17,18 +13,18 @@ export default class PHONG_TIENNGHI extends Model {
         key: 'MA_TIENNGHI'
       }
     },
-    MA_PHONG: {
+    MA_KS: {
       type: DataTypes.INTEGER,
       allowNull: false,
       primaryKey: true,
       references: {
-        model: 'PHONG',
-        key: 'MA_PHONG'
+        model: 'KHACHSAN',
+        key: 'MA_KS'
       }
     }
   }, {
     sequelize,
-    tableName: 'PHONG_TIENNGHI',
+    tableName: 'KHACHSAN_TIENNGHI',
     timestamps: false,
     indexes: [
       {
@@ -37,14 +33,14 @@ export default class PHONG_TIENNGHI extends Model {
         using: "BTREE",
         fields: [
           { name: "MA_TIENNGHI" },
-          { name: "MA_PHONG" },
+          { name: "MA_KS" },
         ]
       },
       {
-        name: "MA_PHONG",
+        name: "MA_KS",
         using: "BTREE",
         fields: [
-          { name: "MA_PHONG" },
+          { name: "MA_KS" },
         ]
       },
     ]
