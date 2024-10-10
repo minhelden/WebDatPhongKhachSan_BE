@@ -11,7 +11,22 @@ const getRoom = async (req, res) =>{
         res.status(200).send(data);
     } catch (error) {
         console.log(error);
-        res.status(500).send("Lỗi khi lấy dữ liệu")
+        res.status(500).send("Lỗi khi lấy dữ liệu");
+    }
+}
+
+const getDataRoom = async (req, res) =>{
+    try {
+        const { MA_KS } = req.params;
+        const data = await model.PHONG.findAll({
+            where:{
+                MA_KS: MA_KS
+            }
+        });
+        res.status(200).send(data);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send("Lỗi khi lấy dữ liệu");
     }
 }
 
@@ -233,4 +248,4 @@ const getPriceDiscount = async (req, res) => {
 
 
 
-export { getRoom, createRoom, updateRoom, deleteRoom, selectRoom, getSearchNameRoom, getRoomID, getConvenient, getPrice, getPriceDiscount} 
+export { getRoom, createRoom, updateRoom, deleteRoom, selectRoom, getSearchNameRoom, getRoomID, getConvenient, getPrice, getPriceDiscount, getDataRoom } 

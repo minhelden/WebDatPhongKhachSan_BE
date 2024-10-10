@@ -54,7 +54,10 @@ const getCountry = async (req, res) => {
 const getProvince = async (req, res) =>{
     try {
         const data = await model.TINHTHANH.findAll({
-            include: ['MA_QUOCGIA_QUOCGIum']
+            include: ['MA_QUOCGIA_QUOCGIum'],
+            where: {
+                MA_QUOCGIA: 1 // Điều kiện MA_QUOCGIA = 1
+            }
         });
         res.status(200).send(data);
     } catch (error) {

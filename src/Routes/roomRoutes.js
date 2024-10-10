@@ -1,5 +1,5 @@
 import express from "express";
-import { createRoom, deleteRoom, getConvenient, getPrice, getPriceDiscount, getRoom, getSearchNameRoom, selectRoom, updateRoom } from "../Controllers/roomController.js";
+import { createRoom, deleteRoom, getConvenient, getDataRoom, getPrice, getPriceDiscount, getRoom, getSearchNameRoom, selectRoom, updateRoom } from "../Controllers/roomController.js";
 import { checkToken } from "../Config/jwtConfig.js";
 
 const roomRoutes = express.Router();
@@ -13,5 +13,6 @@ roomRoutes.get("select-room", selectRoom);
 roomRoutes.get("/get-convenient/:MA_KS", getConvenient)
 roomRoutes.get("/get-price/:MA_KS", getPrice);
 roomRoutes.get("/get-price-discount/:MA_KS", getPriceDiscount);
+roomRoutes.get("/get-data-room/:MA_KS", getDataRoom);
 
 export default roomRoutes;
