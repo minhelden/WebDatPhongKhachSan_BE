@@ -46,6 +46,7 @@ const signUp = async (req, res) => {
         ANHDAIDIEN = ANHDAIDIEN || "noimg.png";
         CHUCVU = CHUCVU || "Customer";
         NGAYDANGKY = NGAYDANGKY || new Date();
+        NGAYSINH = NGAYSINH || new Date();
 
         let newData = {
             HOTEN,
@@ -146,6 +147,47 @@ const loginUser = async (req, res) => {
     }
 };
 
+const loginPartner = async (req, res) => { 
+    try {
+        let { EMAIL, SDT_ND, MATKHAU } = req.body;
+
+        if (!EMAIL && !SDT_ND) {
+            res.status(400).send("Vui lòng cung cấp email hoặc số điện thoại");
+            return;
+        }
+
+        let checkTK = await model.NGUOIDUNG.findOne({
+            where: {
+                [Op.or]: [
+                    EMAIL ? { EMAIL } : {}, 
+                    SDT_ND ? { SDT_ND } : {}
+                ]
+            },
+        });
+
+        if (checkTK) {
+            // Kiểm tra xem CHUCVU có chứa "Partner" hay không
+            if (!checkTK.CHUCVU.includes("Partner")) {
+                res.status(403).send("Chỉ Partner mới có thể đăng nhập");
+                return;
+            }
+            let checkPass = bcrypt.compareSync(MATKHAU, checkTK.MATKHAU);
+            if (checkPass) {
+                let token = taoToken(checkTK);
+                res.status(200).send(token);
+            } else {
+                res.status(400).send("Mật khẩu không đúng");
+            }
+        } else {
+            res.status(400).send("Tài khoản không đúng");
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).send("Đã có lỗi trong quá trình xử lý");
+    }
+};
+
+
 
 const getUserAll = async(req, res) =>{
     try {
@@ -201,36 +243,40 @@ const selectUser = async (req, res) => {
     }
 }
 
-const updateUser = async(req, res) =>{
+const updateUser = async (req, res) => {
     try {
         let { MA_ND } = req.params;
-        let { EMAIL, SDT_ND, NGAYSINH, GIOITINH } = req.body;
+        let { EMAIL, HOTEN, MATKHAU, SDT, NGAYSINH, GIOITINH, CHUCVU } = req.body;
         const token = req.headers.token;
 
         if (!token) {
             return res.status(401).send("Người dùng không được xác thực");
         }
+
         const decodedToken = jwt.verify(token, 'MINHNGHIA');
         const currentUserID = decodedToken.data.MA_ND;
+        const currentUserRole = decodedToken.data.CHUCVU;
 
-        if (Number(MA_ND) !== currentUserID) {
+        if (Number(MA_ND) !== currentUserID && currentUserRole !== "Admin") {
             return res.status(403).send("Không có quyền truy cập thông tin người dùng này");
         }
 
         await model.NGUOIDUNG.update(
-            {EMAIL, SDT_ND, NGAYSINH, GIOITINH},
+            { EMAIL, HOTEN, MATKHAU, SDT, NGAYSINH, GIOITINH, CHUCVU },
             {
-                where:{
+                where: {
                     MA_ND
                 }
             }
         );
+
         res.status(200).send("Cập nhật thông tin người dùng thành công!");
     } catch (error) {
-        console.log(error);
+        console.error(error); 
         res.status(500).send("Đã có lỗi trong quá trình xử lý!");
     }
-} 
+};
+
 
 const deleteUser = async (req, res) => {
     try {
@@ -274,4 +320,4 @@ const logout = async (req, res) => {
     }
 };
 
-export { signUp, loginUser, getUserAll, logout, selectUser, updateUser, deleteUser, loginAdmin }
+export { signUp, loginUser, getUserAll, logout, selectUser, updateUser, deleteUser, loginAdmin, loginPartner }
